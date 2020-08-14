@@ -1,0 +1,184 @@
+﻿@page "/lgremote"
+
+<style>
+    .tv-mat-card {
+        width: 400px;
+    }
+
+    .tv-remote-mat-card {
+        width: 200px;
+    }
+
+    .tv-mat-card-content {
+        padding: 1rem;
+    }
+
+    .tv-mat-card-clean-margin {
+        margin: 0px;
+    }
+
+    .fab-size {
+        width: 50px;
+        height: 50px;
+        background-color: #DC2424 !important;
+    }
+
+    .fab-source {
+        width: 50px;
+        height: 50px;
+        background-color: #5D1AD2;
+    }
+
+    .normal-but {
+        background-color: #177DB9;
+    }
+</style>
+
+<div class="row">
+    <MatCard class="tv-mat-card">
+        <MatCardContent>
+            <MatCardMedia Wide="true" Style="background-color: aliceblue;">
+                <div class="tv-mat-card-content" style="color: white;">
+                    <div class="row">
+                        <div class="col-6">
+                            <MatSubtitle1 class="tv-mat-card-clean-margin" Style="color:black">
+                                Source: @CurrentSource
+                            </MatSubtitle1>
+                            <MatSubtitle1 class="tv-mat-card-clean-margin" Style="color:black">
+                                Channel: @CurrentChannel
+                            </MatSubtitle1>
+                            <MatSubtitle1 class="tv-mat-card-clean-margin" Style="color:black">
+                                Volume: @CurrentVolume
+                            </MatSubtitle1>
+                        </div>
+                    </div>
+                </div>
+            </MatCardMedia>
+            <MatBody2 class="tv-mat-card-content demo-mat-card-clean-margin">
+                LG TV
+            </MatBody2>
+        </MatCardContent>
+    </MatCard>
+</div>
+<br />
+<br />
+
+<div class="row">
+    <MatCard Class="tv-remote-mat-card" Style="background-color:#708090">
+        <div class="row">
+            <div class="col-12" style="text-align:center">
+                <p>LG</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6" style="text-align:center">
+                <MatFAB Class="fab-size" @onclick="PowerOnOrOff" Icon="@MatIconNames.Toggle_on"></MatFAB>
+            </div>
+            <div class="col-6" style="text-align:center">
+                <MatFAB Class="fab-source" @onclick="ToggleSource">S</MatFAB>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-6" style="text-align:center">
+                <MatChip style="margin-bottom:2px" Class="normal-but" @onclick="PreviousChannel" Label="C" LeadingIcon="skip_previous"></MatChip>
+                <span></span>
+                <MatChip Class="normal-but" @onclick="NextChannel" Label="C" TrailingIcon="skip_next"></MatChip>
+            </div>
+            <div class="col-6" style="text-align:center">
+                <MatChip style="margin-bottom:2px" Class="normal-but" @onclick="VolumeUp" Label="Vol +"></MatChip>
+                <span></span>
+                <MatChip Class="normal-but" @onclick="VolumeDown" Label="Vol -"></MatChip>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-12" style="text-align:center">
+                <MatChip Label="Menu"></MatChip>
+            </div>
+        </div>
+        <br />
+    </MatCard>
+</div>
+
+@code {
+
+    private int CurrentChannel = 0;
+    private int CurrentVolume = 0;
+    private string CurrentSource = "Off";
+    private bool TvStatus = false;
+
+    TVRemoteLibrary.Models.LGRemote remote = new TVRemoteLibrary.Models.LGRemote(1, 5, 0, 20);
+
+    private void PowerOnOrOff()
+    {
+        if (!TvStatus)
+        {
+            PowerOn();
+        }
+        else
+        {
+            PowerOff();
+        }
+    }
+
+    private void PowerOn()
+    {
+        remote.PowerOn();
+
+        CurrentChannel = remote.Channel;
+        CurrentVolume = remote.Volume;
+        CurrentSource = remote.CurrentSource;
+        TvStatus = true;
+    }
+
+    private void PowerOff()
+    {
+        remote.PowerOff();
+
+        CurrentChannel = remote.Channel;
+        CurrentVolume = remote.Volume;
+        CurrentSource = remote.CurrentSource;
+        TvStatus = false;
+    }
+
+    private void VolumeUp()
+    {
+        if (TvStatus)
+            remote.VolumeUp();
+
+        CurrentVolume = remote.Volume;
+    }
+
+    private void VolumeDown()
+    {
+        if (TvStatus)
+            remote.VolumeDown();
+
+        CurrentVolume = remote.Volume;
+    }
+
+    private void NextChannel()
+    {
+        if (TvStatus)
+            remote.NextChannel();
+
+        CurrentChannel = remote.Channel;
+    }
+
+    private void PreviousChannel()
+    {
+        if (TvStatus)
+            remote.PreviousChannel();
+
+        CurrentChannel = remote.Channel;
+    }
+
+    private void ToggleSource()
+    {
+        if (TvStatus)
+            remote.SourceToggle();
+
+        CurrentSource = remote.CurrentSource;
+    }
+}
